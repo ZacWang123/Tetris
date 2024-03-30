@@ -13,6 +13,6 @@ public class OBlock : Tetromino
 };
 
     public override int Id => 4;
-    protected override CellPosition StartOffset => new CellPosition(0, 4);
+    protected override CellPosition StartOffset => new CellPosition(0, 18);
     protected override CellPosition[][] Cells => cells;
 }

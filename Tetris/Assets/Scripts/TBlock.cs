@@ -25,6 +25,6 @@ public class TBlock : Tetromino
      };
 
     public override int Id => 6;
-    protected override CellPosition StartOffset => new CellPosition(0, 3);
+    protected override CellPosition StartOffset => new CellPosition(0, 17);
     protected override CellPosition[][] Cells => cells;
 }

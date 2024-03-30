@@ -32,6 +32,11 @@ public class GameGrid
         }
     }
 
+    public void UpdateGrid(int row, int col, int Id)
+    {
+        grid[row, col] = Id;
+    }
+
     public void UpdateGridColour()
     {
         for (int rows = 0; rows < Rows; rows++)
