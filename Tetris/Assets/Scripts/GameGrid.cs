@@ -15,7 +15,18 @@ public class GameGrid
         Rows = rows;
         Columns = cols;
         Grid = new int[Columns, Rows];
+        ZeroGrid();
         GridCell = cell;
+    }
+
+    public void ZeroGrid() {
+        for (int cols = 0; cols < Columns; cols++)
+        {
+            for (int rows = 0; rows < Rows; rows++)
+            {
+                Grid[cols, rows] = 0;
+            }
+        }
     }
 
     public void DrawGrid()
