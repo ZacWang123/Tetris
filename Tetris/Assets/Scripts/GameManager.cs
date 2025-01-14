@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     public Block currentBlock;
     public int blockX;
     public int blockY;
+    private float updateInterval = 0.05f;
+    private float time;
+    private bool gameActive = true;
 
     void Start()
     {
@@ -19,6 +22,7 @@ public class GameManager : MonoBehaviour
         grid.DrawGrid();
         NewBlock();
         PlaceBlock();
+        grid.UpdateGridColour();
     }
 
     public void NewBlock() {
@@ -69,12 +73,66 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void CheckMovement() {
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            MoveLeft();
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            MoveRight();
+
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            MoveDown();
+
+        }
+    }
+
+    public void MoveLeft() {
+        return;
+    }
+
+    public void MoveRight() {
+        return;
+    }
+
+    public void MoveDown() {
+        return;
+    }
+
+    public void ClearBlock() {
+        for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
+        {
+            for (int rows = 0; rows < currentBlock.Cells.GetLength(1); rows++)
+            {
+                if (currentBlock.Cells[cols, rows] == 1)
+                {
+                    int gridX = blockX + rows;
+                    int gridY = blockY - cols + 1;
+
+                    if (grid.WithinGrid(gridX, gridY))
+                    {
+                        grid.UpdateGrid(gridX, gridY, 0);
+                    }
+                }
+            }
+        }
+    }
+
     public void GameOver() {
         Debug.Log("Game Over");
     }
 
     void Update()
     {
-        grid.UpdateGridColour();
+        if (gameActive) {
+            time += Time.deltaTime;
+            if (time > updateInterval) {
+                CheckMovement();
+                grid.UpdateGridColour();
+            }
+        }
     }
 }
