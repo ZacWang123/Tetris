@@ -74,6 +74,13 @@ public class GameGrid
         }
         return false;
     }
+
+    public void ClearRow(int row) {
+        for (int i = 0; i < Columns; i++) {
+            Grid[i, row] = 0;
+        }
+    }
+
     public void ResetGrid()
     {
         for (int cols = 0; cols < Columns; cols++)
