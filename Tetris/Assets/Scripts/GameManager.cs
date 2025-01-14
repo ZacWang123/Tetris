@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class GameManager : MonoBehaviour
     public Block currentBlock;
     public int blockX;
     public int blockY;
-    private float updateInterval = 0.05f;
+    private float updateInterval = 0.7f;
     private float time;
     private bool gameActive = true;
 
@@ -52,7 +53,8 @@ public class GameManager : MonoBehaviour
         }
 
         blockX = width / 2 - currentBlock.Cells.GetLength(1) / 2;
-        blockY = height - currentBlock.Cells.GetLength(0);
+        blockY = height - 1;
+        PlaceBlock();
     }
 
     public void PlaceBlock() {
@@ -62,7 +64,6 @@ public class GameManager : MonoBehaviour
                     int gridX = blockX + rows;
                     int gridY = blockY - cols;
 
-                    Debug.Log(gridX.ToString() + ":" + gridY.ToString());
                     grid.UpdateGrid(gridX, gridY, 1);
                 }
             }
@@ -82,6 +83,16 @@ public class GameManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             MoveDown();
+
+        }
+        else if (Input.GetKeyDown(KeyCode.Z))
+        {
+            RotateAnticlockwise();
+
+        }
+        else if (Input.GetKeyDown(KeyCode.X))
+        {
+            RotateClockwise();
 
         }
     }
@@ -135,8 +146,79 @@ public class GameManager : MonoBehaviour
         PlaceBlock();
     }
 
-    public void MoveDown() {
-        return;
+    public void MoveDown()
+    {
+        ClearBlock();
+
+        for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
+        {
+            for (int rows = 0; rows < currentBlock.Cells.GetLength(1); rows++)
+            {
+                if (currentBlock.Cells[cols, rows] == 1)
+                {
+                    int gridX = blockX + rows;
+                    int gridY = blockY - cols - 1;
+
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
+                    {
+                        PlaceBlock();
+                        NewBlock();
+                        return;
+                    }
+                }
+            }
+        }
+
+        blockY--;
+        PlaceBlock();
+    }
+    public void RotateAnticlockwise() {
+        ClearBlock();
+        currentBlock.RotateAntiClockwise();
+
+        for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
+        {
+            for (int rows = 0; rows < currentBlock.Cells.GetLength(1); rows++)
+            {
+                if (currentBlock.Cells[cols, rows] == 1)
+                {
+                    int gridX = blockX + rows;
+                    int gridY = blockY - cols;
+
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
+                    {
+                        currentBlock.RotateClockwise();
+                    }
+                }
+            }
+        }
+
+        PlaceBlock();
+    }
+
+    public void RotateClockwise()
+    {
+        ClearBlock();
+        currentBlock.RotateClockwise();
+
+        for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
+        {
+            for (int rows = 0; rows < currentBlock.Cells.GetLength(1); rows++)
+            {
+                if (currentBlock.Cells[cols, rows] == 1)
+                {
+                    int gridX = blockX + rows;
+                    int gridY = blockY - cols;
+
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
+                    {
+                        currentBlock.RotateAntiClockwise();
+                    }
+                }
+            }
+        }
+
+        PlaceBlock();
     }
 
     public void ClearBlock() {
@@ -165,10 +247,12 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (gameActive) {
+            CheckMovement();
+            grid.UpdateGridColour();
             time += Time.deltaTime;
             if (time > updateInterval) {
-                CheckMovement();
-                grid.UpdateGridColour();
+                MoveDown();
+                time = 0f;
             }
         }
     }
