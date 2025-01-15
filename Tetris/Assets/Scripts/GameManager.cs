@@ -187,7 +187,12 @@ public class GameManager : MonoBehaviour
 
                     if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
                     {
-                        currentBlock.RotateClockwise();
+                        if (WallKick(1) != 1)
+                        {
+                            if (WallKick(-1) != 1) {
+                                currentBlock.RotateClockwise();
+                            }
+                        }
                     }
                 }
             }
@@ -212,13 +217,43 @@ public class GameManager : MonoBehaviour
 
                     if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
                     {
-                        currentBlock.RotateAntiClockwise();
+                        if (WallKick(1) != 1)
+                        {
+                            if (WallKick(-1) != 1)
+                            {
+                                currentBlock.RotateAntiClockwise();
+                            }
+                        }
                     }
                 }
             }
         }
 
         PlaceBlock();
+    }
+
+    public int WallKick(int x) {
+        blockX += x;
+
+        for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
+        {
+            for (int rows = 0; rows < currentBlock.Cells.GetLength(1); rows++)
+            {
+                if (currentBlock.Cells[cols, rows] == 1)
+                {
+                    int gridX = blockX + rows;
+                    int gridY = blockY - cols;
+
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
+                    {
+                        blockX -= x;
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        return 1;
     }
 
     public void ClearBlock() {
