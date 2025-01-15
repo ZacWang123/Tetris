@@ -57,11 +57,35 @@ public class GameGrid
                 switch (Grid[cols, rows])
                 {
                     case 0:
-                        Cell.material.color = new Color32(91, 168, 58, 255);
+                        Cell.material.color = new Color32(127, 127, 127, 255);
                         break;
 
                     case 1:
-                        Cell.material.color = new Color32(51, 72, 227, 255);
+                        Cell.material.color = new Color32(0, 255, 255, 255);
+                        break;
+
+                    case 2:
+                        Cell.material.color = new Color32(255, 255, 0, 255);
+                        break;
+
+                    case 3:
+                        Cell.material.color = new Color32(0, 255, 0, 255);
+                        break;
+
+                    case 4:
+                        Cell.material.color = new Color32(255, 0, 0, 255);
+                        break;
+
+                    case 5:
+                        Cell.material.color = new Color32(255, 127, 0, 255);
+                        break;
+
+                    case 6:
+                        Cell.material.color = new Color32(0, 0, 255, 255);
+                        break;
+
+                    case 7:
+                        Cell.material.color = new Color32(128, 0, 128, 255);
                         break;
                 }
             }

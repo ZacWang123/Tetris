@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public Block currentBlock;
     public int blockX;
     public int blockY;
+    private int ID;
     private float updateInterval = 0.7f;
     private float time;
     private bool gameActive = true;
@@ -54,6 +55,7 @@ public class GameManager : MonoBehaviour
 
         blockX = width / 2 - currentBlock.Cells.GetLength(1) / 2;
         blockY = height - 1;
+        ID = currentBlock.ID;
         PlaceBlock();
     }
 
@@ -64,7 +66,7 @@ public class GameManager : MonoBehaviour
                     int gridX = blockX + rows;
                     int gridY = blockY - cols;
 
-                    grid.UpdateGrid(gridX, gridY, 1);
+                    grid.UpdateGrid(gridX, gridY, ID);
                 }
             }
         }

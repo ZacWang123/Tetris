@@ -5,9 +5,11 @@ using UnityEngine;
 public class Block
 {
     public int[,] Cells;
+    public int ID;
 
-    public Block(int[,] cells) {
-        Cells = cells;       
+    public Block(int[,] cells, int id) {
+        Cells = cells;
+        ID = id;
     }
 
     public static Block CreateI() {
@@ -18,7 +20,9 @@ public class Block
             {0, 0, 0, 0}
         };
 
-        return new Block(cells);
+        int id = 1;
+
+        return new Block(cells, id);
     }
 
     public static Block CreateO() {
@@ -29,7 +33,9 @@ public class Block
             {0, 0, 0, 0}
         };
 
-        return new Block(cells);
+        int id = 2;
+
+        return new Block(cells, id);
     }
 
     public static Block CreateS()
@@ -41,7 +47,9 @@ public class Block
             {0, 0, 0, 0}
         };
 
-        return new Block(cells);
+        int id = 3;
+
+        return new Block(cells, id);
     }
 
     public static Block CreateZ()
@@ -53,7 +61,9 @@ public class Block
             {0, 0, 0, 0}
         };
 
-        return new Block(cells);
+        int id = 4;
+
+        return new Block(cells, id);
     }
 
     public static Block CreateL()
@@ -65,7 +75,9 @@ public class Block
             {0, 0, 0, 0}
         };
 
-        return new Block(cells);
+        int id = 5;
+
+        return new Block(cells, id);
     }
 
     public static Block CreateJ()
@@ -77,7 +89,9 @@ public class Block
             {0, 0, 0, 0}
         };
 
-        return new Block(cells);
+        int id = 6;
+
+        return new Block(cells, id);
     }
 
     public static Block CreateT()
@@ -89,7 +103,9 @@ public class Block
             {0, 0, 0, 0}
         };
 
-        return new Block(cells);
+        int id = 7;
+
+        return new Block(cells, id);
     }
 
     public void RotateClockwise()
