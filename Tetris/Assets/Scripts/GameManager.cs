@@ -162,6 +162,7 @@ public class GameManager : MonoBehaviour
                     if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
                     {
                         PlaceBlock();
+                        grid.CheckRowClear();
                         NewBlock();
                         return;
                     }

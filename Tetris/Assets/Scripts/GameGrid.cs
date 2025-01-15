@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class GameGrid
@@ -86,9 +87,44 @@ public class GameGrid
         return false;
     }
 
+    public void CheckRowClear() {
+        for (int row = 0; row < Rows; row++) {
+            if (RowFull(row) == 1) {
+                ClearRow(row);
+                ShiftRowsDown(row);
+            }
+        }
+        UpdateGridColour();
+    }
+
+    public void ShiftRowsDown(int row) {
+        for (int r = row; r < Rows - 1; r++)
+        {
+            for (int col = 0; col < Columns; col++)
+            {
+                Grid[col, r] = Grid[col, r + 1];
+            }
+        }
+
+        for (int col = 0; col < Columns; col++)
+        {
+            Grid[col, Rows - 1] = 0;
+        }
+    }
+
+    public int RowFull(int row) {
+        for (int col = 0; col < Columns; col++)
+        {
+            if (Grid[col, row] == 0) {
+                return 0;
+            }
+        }
+        return 1;
+    }
+
     public void ClearRow(int row) {
-        for (int i = 0; i < Columns; i++) {
-            Grid[i, row] = 0;
+        for (int col = 0; col < Columns; col++) {
+            Grid[col, row] = 0;
         }
     }
 
