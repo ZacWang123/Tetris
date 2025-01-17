@@ -36,7 +36,7 @@ public class GameGrid
 
         for (int cols = 0; cols < Columns; cols++)
         {
-            for (int rows = 0; rows < Rows; rows++)
+            for (int rows = 0; rows < Rows - 2; rows++)
             {
                 GameObject Cell = Object.Instantiate(GridCell, new Vector2(cols, rows), Quaternion.identity);
                 Renderer CellObject = Cell.GetComponent<Renderer>();
@@ -50,7 +50,7 @@ public class GameGrid
     {
         for (int cols = 0; cols < Columns; cols++)
         {
-            for (int rows = 0; rows < Rows; rows++)
+            for (int rows = 0; rows < Rows - 2; rows++)
             {
                 Renderer Cell = VisualGrid[cols, rows];
 

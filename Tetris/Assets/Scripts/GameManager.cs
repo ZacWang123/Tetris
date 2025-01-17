@@ -8,9 +8,10 @@ public class GameManager : MonoBehaviour
 {
     public GameObject Cell;
     public GameGrid grid;
-    public int height = 20;
+    public int height = 22;
     public int width = 10;
     public Block currentBlock;
+    public GameObject gameOver;
     public int blockX;
     public int blockY;
     private int ID;
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        gameOver.SetActive(false);
         grid = new GameGrid(height, width, Cell);
         grid.DrawGrid();
         NewBlock();
@@ -54,9 +56,28 @@ public class GameManager : MonoBehaviour
         }
 
         blockX = width / 2 - currentBlock.Cells.GetLength(1) / 2;
-        blockY = height - 1;
+        blockY = height;
+        CheckGameOver();
         ID = currentBlock.ID;
         PlaceBlock();
+    }
+
+    public void CheckGameOver() {
+        for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
+        {
+            for (int rows = 0; rows < currentBlock.Cells.GetLength(1); rows++)
+            {
+                if (currentBlock.Cells[cols, rows] == 1)
+                {
+                    int gridX = blockX + rows;
+                    int gridY = blockY - cols;
+
+                    if (grid.GetGridCell(gridX, gridY) != 0) {
+                        GameOver();
+                    }
+                }
+            }
+        }
     }
 
     public void PlaceBlock() {
@@ -95,6 +116,11 @@ public class GameManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.X))
         {
             RotateClockwise();
+
+        }
+        else if (Input.GetKeyDown(KeyCode.Space))
+        {
+            DropBlock();
 
         }
     }
@@ -148,6 +174,9 @@ public class GameManager : MonoBehaviour
         PlaceBlock();
     }
 
+    public void DropBlock() { 
+    }
+
     public void MoveDown()
     {
         ClearBlock();
@@ -175,6 +204,7 @@ public class GameManager : MonoBehaviour
         blockY--;
         PlaceBlock();
     }
+
     public void RotateAnticlockwise() {
         ClearBlock();
         currentBlock.RotateAntiClockwise();
@@ -279,7 +309,24 @@ public class GameManager : MonoBehaviour
     }
 
     public void GameOver() {
-        Debug.Log("Game Over");
+        gameActive = false;
+        gameOver.SetActive(true);
+    }
+
+    public void RestartGame() {
+        gameOver.SetActive(false);
+        grid.ResetGrid();
+        gameActive = true;
+        NewBlock();
+    }
+
+    public void ExitGame() {
+        Application.Quit();
+
+        if (Application.isEditor)
+        {
+            UnityEditor.EditorApplication.isPlaying = false;
+        }
     }
 
     void Update()
