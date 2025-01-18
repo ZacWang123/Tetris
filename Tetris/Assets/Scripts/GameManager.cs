@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     public GameObject gameOver;
     public int blockX;
     public int blockY;
+    public int ghostX;
+    public int ghostY;
     private int ID;
     private float updateInterval = 0.7f;
     private float time;
@@ -93,6 +95,43 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void PlaceGhost()
+    {
+        for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
+        {
+            for (int rows = 0; rows < currentBlock.Cells.GetLength(1); rows++)
+            {
+                if (currentBlock.Cells[cols, rows] == 1)
+                {
+                    int gridX = ghostX + rows;
+                    int gridY = ghostY - cols;
+
+                    grid.UpdateGrid(gridX, gridY, ID * -1);
+                }
+            }
+        }
+    }
+
+    public void ClearGhost() 
+    {
+        for (int cols = 0; cols<currentBlock.Cells.GetLength(0); cols++)
+        {
+            for (int rows = 0; rows<currentBlock.Cells.GetLength(1); rows++)
+            {
+                if (currentBlock.Cells[cols, rows] == 1)
+                {
+                    int gridX = ghostX + rows;
+                    int gridY = ghostY - cols;
+
+                    if (grid.WithinGrid(gridX, gridY))
+                    {
+                        grid.UpdateGrid(gridX, gridY, 0);
+                    }
+                }
+            }
+        }
+    }
+
     public void CheckMovement() {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -127,6 +166,7 @@ public class GameManager : MonoBehaviour
 
     public void MoveLeft() {
         ClearBlock();
+        ClearGhost();
 
         for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
         {
@@ -137,7 +177,7 @@ public class GameManager : MonoBehaviour
                     int gridX = blockX + rows - 1;
                     int gridY = blockY - cols;
 
-                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0) {
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) > 0) {
                         PlaceBlock();
                         return;
                     }
@@ -146,11 +186,13 @@ public class GameManager : MonoBehaviour
         }
 
         blockX--;
+        GhostBlock();
         PlaceBlock();
     }
 
     public void MoveRight() {
         ClearBlock();
+        ClearGhost();
 
         for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
         {
@@ -161,7 +203,7 @@ public class GameManager : MonoBehaviour
                     int gridX = blockX + rows + 1;
                     int gridY = blockY - cols;
 
-                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) > 0)
                     {
                         PlaceBlock();
                         return;
@@ -171,10 +213,78 @@ public class GameManager : MonoBehaviour
         }
 
         blockX++;
+        GhostBlock();
         PlaceBlock();
     }
 
-    public void DropBlock() { 
+    public void DropBlock() {
+        while (ValidMoveDown() == 1) {
+            blockY--;
+        }
+        ClearGhost();
+        PlaceBlock();
+        NewBlock();
+        GhostBlock();
+    }
+
+    public int ValidMoveDown()
+    {
+        ClearBlock();
+        for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
+        {
+            for (int rows = 0; rows < currentBlock.Cells.GetLength(1); rows++)
+            {
+                if (currentBlock.Cells[cols, rows] == 1)
+                {
+                    int gridX = blockX + rows;
+                    int gridY = blockY - cols - 1;
+
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) > 0)
+                    {
+                        ClearBlock();
+                        return 0;
+                    }
+                }
+            }
+        }
+        ClearBlock();
+        return 1;
+    }
+
+    public void GhostBlock()
+    {
+        ghostX = blockX;
+        ghostY = blockY;
+
+        while (GhostValidMoveDown() == 1)
+        {
+            ghostY--;
+        };
+        PlaceGhost();
+    }
+
+    public int GhostValidMoveDown()
+    {
+        ClearBlock();
+        for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
+        {
+            for (int rows = 0; rows < currentBlock.Cells.GetLength(1); rows++)
+            {
+                if (currentBlock.Cells[cols, rows] == 1)
+                {
+                    int gridX = ghostX + rows;
+                    int gridY = ghostY - cols - 1;
+
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) > 0)
+                    {
+                        PlaceBlock();
+                        return 0;
+                    }
+                }
+            }
+        }
+        PlaceBlock();
+        return 1;
     }
 
     public void MoveDown()
@@ -190,7 +300,7 @@ public class GameManager : MonoBehaviour
                     int gridX = blockX + rows;
                     int gridY = blockY - cols - 1;
 
-                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) > 0)
                     {
                         PlaceBlock();
                         grid.CheckRowClear();
@@ -202,11 +312,13 @@ public class GameManager : MonoBehaviour
         }
 
         blockY--;
+        GhostBlock();
         PlaceBlock();
     }
 
     public void RotateAnticlockwise() {
         ClearBlock();
+        ClearGhost();
         currentBlock.RotateAntiClockwise();
 
         for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
@@ -218,7 +330,7 @@ public class GameManager : MonoBehaviour
                     int gridX = blockX + rows;
                     int gridY = blockY - cols;
 
-                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) > 0)
                     {
                         if (WallKick(1) != 1)
                         {
@@ -231,12 +343,14 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        GhostBlock();
         PlaceBlock();
     }
 
     public void RotateClockwise()
     {
         ClearBlock();
+        ClearGhost();
         currentBlock.RotateClockwise();
 
         for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
@@ -248,7 +362,7 @@ public class GameManager : MonoBehaviour
                     int gridX = blockX + rows;
                     int gridY = blockY - cols;
 
-                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) > 0)
                     {
                         if (WallKick(1) != 1)
                         {
@@ -262,6 +376,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        GhostBlock();
         PlaceBlock();
     }
 
@@ -277,7 +392,7 @@ public class GameManager : MonoBehaviour
                     int gridX = blockX + rows;
                     int gridY = blockY - cols;
 
-                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) != 0)
+                    if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) > 0)
                     {
                         blockX -= x;
                         return 0;

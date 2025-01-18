@@ -87,6 +87,34 @@ public class GameGrid
                     case 7:
                         Cell.material.color = new Color32(128, 0, 128, 255);
                         break;
+
+                    case -1:
+                        Cell.material.color = new Color32(0, 255, 255, 64);
+                        break;
+
+                    case -2:
+                        Cell.material.color = new Color32(255, 255, 0, 64);
+                        break;
+
+                    case -3:
+                        Cell.material.color = new Color32(0, 255, 0, 64);
+                        break;
+
+                    case -4:
+                        Cell.material.color = new Color32(255, 0, 0, 64);
+                        break;
+
+                    case -5:
+                        Cell.material.color = new Color32(255, 127, 0, 64);
+                        break;
+
+                    case -6:
+                        Cell.material.color = new Color32(0, 0, 255, 64);
+                        break;
+
+                    case -7:
+                        Cell.material.color = new Color32(128, 0, 128, 64);
+                        break;
                 }
             }
         }
