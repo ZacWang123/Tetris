@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 
@@ -139,14 +140,17 @@ public class GameGrid
         return false;
     }
 
-    public void CheckRowClear() {
+    public int CheckRowClear() {
+        int numRows = 0;
         for (int row = 0; row < Rows; row++) {
             if (RowFull(row) == 1) {
+                numRows += 1;
                 ClearRow(row);
                 ShiftRowsDown(row);
             }
         }
         UpdateGridColour();
+        return numRows;
     }
 
     public void ShiftRowsDown(int row) {

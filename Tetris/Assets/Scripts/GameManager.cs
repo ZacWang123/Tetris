@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,10 +9,14 @@ public class GameManager : MonoBehaviour
 {
     public GameObject Cell;
     public GameGrid grid;
+    public NextBlockDisplay nextGrid;
     public int height = 22;
     public int width = 10;
     public Block currentBlock;
+    public Block nextBlock;
     public GameObject gameOver;
+    public TextMeshProUGUI RowsCleared;
+    public int numRows = 0;
     public int blockX;
     public int blockY;
     public int ghostX;
@@ -25,15 +30,18 @@ public class GameManager : MonoBehaviour
     {
         gameOver.SetActive(false);
         grid = new GameGrid(height, width, Cell);
+        nextGrid = new NextBlockDisplay(4, 4, Cell);
         grid.DrawGrid();
-        NewBlock();
+        nextGrid.DrawGrid();
+        StartBlock();
         PlaceBlock();
         grid.UpdateGridColour();
     }
 
-    public void NewBlock() {
+    public void StartBlock() {
         int randomBlock = Random.Range(0, 7);
-        switch (randomBlock) {
+        switch (randomBlock)
+        {
             case 0:
                 currentBlock = Block.CreateI();
                 break;
@@ -57,11 +65,90 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
+        randomBlock = Random.Range(0, 7);
+        switch (randomBlock)
+        {
+            case 0:
+                nextBlock = Block.CreateI();
+                break;
+            case 1:
+                nextBlock = Block.CreateO();
+                break;
+            case 2:
+                nextBlock = Block.CreateS();
+                break;
+            case 3:
+                nextBlock = Block.CreateZ();
+                break;
+            case 4:
+                nextBlock = Block.CreateL();
+                break;
+            case 5:
+                nextBlock = Block.CreateJ();
+                break;
+            case 6:
+                nextBlock = Block.CreateT();
+                break;
+        }
+
+        blockX = width / 2 - currentBlock.Cells.GetLength(1) / 2;
+        blockY = height;
+        ID = currentBlock.ID;
+        PlaceBlock();
+        UpdateBlockDisplay();
+    }
+
+    public void UpdateBlockDisplay() {
+        for (int rows = 0; rows < nextBlock.Cells.GetLength(0); rows++)
+        {
+            for (int cols = 0; cols < nextBlock.Cells.GetLength(1); cols++)
+            {
+                if (nextBlock.Cells[cols, rows] == 1)
+                {
+                    nextGrid.UpdateGrid(cols, rows, nextBlock.ID);
+                }
+                else {
+                    nextGrid.UpdateGrid(cols, rows, 0);
+                }
+            }
+        }
+        nextGrid.UpdateGridColour();
+    }
+
+    public void NewBlock() {
+        currentBlock = nextBlock;
+
+        int randomBlock = Random.Range(0, 7);
+        switch (randomBlock) {
+            case 0:
+                nextBlock = Block.CreateI();
+                break;
+            case 1:
+                nextBlock = Block.CreateO();
+                break;
+            case 2:
+                nextBlock = Block.CreateS();
+                break;
+            case 3:
+                nextBlock = Block.CreateZ();
+                break;
+            case 4:
+                nextBlock = Block.CreateL();
+                break;
+            case 5:
+                nextBlock = Block.CreateJ();
+                break;
+            case 6:
+                nextBlock = Block.CreateT();
+                break;
+        }
+
         blockX = width / 2 - currentBlock.Cells.GetLength(1) / 2;
         blockY = height;
         CheckGameOver();
         ID = currentBlock.ID;
         PlaceBlock();
+        UpdateBlockDisplay();
     }
 
     public void CheckGameOver() {
@@ -183,6 +270,7 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
         ClearGhost();
         blockX--;
         GhostBlock();
@@ -221,7 +309,8 @@ public class GameManager : MonoBehaviour
         }
         ClearGhost();
         PlaceBlock();
-        grid.CheckRowClear();
+        numRows += grid.CheckRowClear();
+        RowsCleared.text = "Rows Cleared: " + numRows;
         NewBlock();
         GhostBlock();
     }
@@ -302,8 +391,10 @@ public class GameManager : MonoBehaviour
                     if (!grid.WithinGrid(gridX, gridY) || grid.GetGridCell(gridX, gridY) > 0)
                     {
                         PlaceBlock();
-                        grid.CheckRowClear();
+                        numRows += grid.CheckRowClear();
+                        RowsCleared.text = "Rows Cleared: " + numRows;
                         NewBlock();
+                        GhostBlock();
                         return;
                     }
                 }
@@ -429,6 +520,8 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame() {
         gameOver.SetActive(false);
+        numRows = 0;
+        RowsCleared.text = "Rows Cleared: " + numRows;
         grid.ResetGrid();
         gameActive = true;
         NewBlock();
