@@ -166,7 +166,6 @@ public class GameManager : MonoBehaviour
 
     public void MoveLeft() {
         ClearBlock();
-        ClearGhost();
 
         for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
         {
@@ -184,7 +183,7 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-
+        ClearGhost();
         blockX--;
         GhostBlock();
         PlaceBlock();
@@ -192,7 +191,6 @@ public class GameManager : MonoBehaviour
 
     public void MoveRight() {
         ClearBlock();
-        ClearGhost();
 
         for (int cols = 0; cols < currentBlock.Cells.GetLength(0); cols++)
         {
@@ -211,7 +209,7 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-
+        ClearGhost();
         blockX++;
         GhostBlock();
         PlaceBlock();
@@ -223,6 +221,7 @@ public class GameManager : MonoBehaviour
         }
         ClearGhost();
         PlaceBlock();
+        grid.CheckRowClear();
         NewBlock();
         GhostBlock();
     }
