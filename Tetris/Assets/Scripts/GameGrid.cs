@@ -147,6 +147,7 @@ public class GameGrid
                 numRows += 1;
                 ClearRow(row);
                 ShiftRowsDown(row);
+                row--;
             }
         }
         UpdateGridColour();
